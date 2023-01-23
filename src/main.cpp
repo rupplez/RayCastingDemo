@@ -5,7 +5,7 @@
 #define window_width 640
 #define window_height 480
 
-#define GETRAD(DIR) DIR*(M_PI/180)
+#define DEGTORAD(DIR) DIR*(M_PI/180)
 
 using namespace std;
 
@@ -18,17 +18,17 @@ const int B_SIZE = 32;
 int map[M_H][M_W]{
 	{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
 	{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-	{1,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-	{1,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+	{1,0,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+	{1,0,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 	{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 	{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 	{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-	{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,1},
-	{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,1},
+	{2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,0,0,1},
+	{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,0,0,1},
 	{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 	{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-	{1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,1},
-	{1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,1},
+	{1,0,0,0,0,0,2,2,0,0,0,0,0,0,0,0,0,0,0,1},
+	{1,0,0,0,0,0,2,2,0,0,0,0,0,0,0,0,0,0,0,1},
 	{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 	{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 	{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
@@ -43,13 +43,10 @@ float pl_y = 288;
 float pl_dir = 315.0f;
 float spd = 3.0f;
 
-void MoveVec(float _dir, float _spd) { pl_x += cos(GETRAD(_dir))*_spd; pl_y -= sin(GETRAD(_dir))*_spd;}
+void MoveVec(float _dir, float _spd) { pl_x += cos(DEGTORAD(_dir))*_spd; pl_y -= sin(DEGTORAD(_dir))*_spd;}
 
-bool checkWall(float x, float y) {
-	if (map[int(y / B_SIZE)][int(x / B_SIZE)])
-		return true;
-	else
-		return false;
+int checkWall(float x, float y) {
+    return map[int(y / B_SIZE)][int(x / B_SIZE)];
 }
 
 void RenderMap(SDL_Renderer* rd) {
@@ -58,18 +55,34 @@ void RenderMap(SDL_Renderer* rd) {
 	float rayX;
 	float rayY;
 	float rayDir;
+    float dist;
 	float wallHeight;
+    int obj=0; //
 	rayDir = pl_dir + FOV / 2;
 	for (int iterX = 0; iterX < window_width; iterX++, rayDir -= (float)FOV / (float)window_width) {
 		rayX = pl_x;
 		rayY = pl_y;
-		while (!checkWall(rayX, rayY)) {
-			rayX += cos(GETRAD(rayDir));
-			rayY -= sin(GETRAD(rayDir));
+		while (!(obj = checkWall(rayX, rayY))) {
+			rayX += cos(DEGTORAD(rayDir));
+			rayY -= sin(DEGTORAD(rayDir));
 		}
-		wallHeight = pow(window_height / 2, 2) / sqrt(pow(pl_x - rayX, 2) + pow(pl_y - rayY, 2));
-		SDL_SetRenderDrawColor(rd, 255, 255, 255, SDL_ALPHA_OPAQUE);
-		SDL_RenderDrawLine(rd, iterX, (window_height - wallHeight) / 2, iterX, (window_height + wallHeight) / 2);
+
+        dist = sqrt(pow(pl_x - rayX, 2) + pow(pl_y - rayY, 2)) * cos(DEGTORAD((rayDir - pl_dir)));
+		wallHeight = pow(window_height / 2, 2) / dist;
+
+        SDL_SetRenderDrawColor(rd, 82, 255, 252, SDL_ALPHA_OPAQUE); //ceil
+        SDL_RenderDrawLine(rd, iterX, 0, iterX, (window_height - wallHeight) / 2);
+
+        if(obj==1) {
+            SDL_SetRenderDrawColor(rd, 140, 140, 140, SDL_ALPHA_OPAQUE); //wall
+		    SDL_RenderDrawLine(rd, iterX, (window_height - wallHeight) / 2, iterX, (window_height + wallHeight) / 2);
+        } else if(obj==2) {
+            SDL_SetRenderDrawColor(rd, 161, 80, 48, SDL_ALPHA_OPAQUE); //block
+		    SDL_RenderDrawLine(rd, iterX, (window_height - wallHeight) / 2, iterX, (window_height + wallHeight) / 2);
+        }
+
+        SDL_SetRenderDrawColor(rd, 88, 204, 86, SDL_ALPHA_OPAQUE); //bottom
+		SDL_RenderDrawLine(rd, iterX, (window_height + wallHeight) / 2, iterX, window_height);
 	}
 	//std::cout << "Debugging" << '\n';
 	SDL_RenderPresent(rd);
