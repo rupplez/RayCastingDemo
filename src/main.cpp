@@ -4,8 +4,8 @@
 #include <iostream>
 #include <math.h>
 
-#define window_width 640
-#define window_height 480
+#define window_width 1024
+#define window_height 768
 
 #define DEGTORAD(DIR) DIR*(M_PI/180)
 
@@ -16,36 +16,68 @@ int FOV = 40;
 
 const int M_W = 20;
 const int M_H = 20;
-const int B_SIZE = 32;
+const int B_SIZE = 64;
 int map[M_H][M_W] {
-	{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-	{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-	{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-	{1,0,0,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-	{1,0,0,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-	{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-	{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-	{2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-	{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,1},
-	{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-	{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-	{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-	{1,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,1},
-	{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-	{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-	{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-	{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-	{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-	{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-	{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
+	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+    {1, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 2, 2, 2, 0, 2, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 1},
+    {1, 0, 2, 0, 2, 0, 2, 0, 2, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 1},
+    {1, 0, 2, 0, 2, 0, 2, 0, 2, 2, 2, 2, 2, 0, 2, 2, 2, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 2, 2, 2, 1},
+    {1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 2, 2, 2, 0, 2, 0, 0, 1},
+    {1, 0, 0, 0, 2, 0, 2, 0, 0, 0, 0, 0, 2, 0, 2, 0, 2, 0, 2, 1},
+    {1, 2, 2, 0, 2, 0, 2, 2, 2, 2, 2, 0, 0, 0, 2, 0, 2, 0, 0, 1},
+    {1, 0, 0, 0, 2, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 0, 2, 2, 2, 1},
+    {1, 2, 2, 0, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 2, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1},
+    {1, 2, 2, 2, 2, 2, 2, 0, 2, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 2, 0, 2, 0, 2, 0, 2, 2, 2, 2, 2, 2, 0, 1},
+    {1, 2, 2, 2, 2, 0, 2, 0, 2, 0, 2, 0, 0, 0, 0, 0, 0, 2, 0, 1},
+    {1, 0, 0, 0, 2, 0, 2, 0, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2, 0, 1},
+    {1, 0, 2, 0, 2, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 2, 0, 2, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
 };
 
 float pl_x = 64;
-float pl_y = 288;
+float pl_y = 64;//288;
 float pl_dir = 315.0f;
 float spd = 3.0f;
 
-SDL_Surface *image[2] = {IMG_Load("./wall.png"), IMG_Load("./grass.png")};
+SDL_Surface *image[2] = {IMG_Load("./grass.png"), IMG_Load("./wall.png")};
+
+Uint32 getpixel(SDL_Surface *surface, int x, int y)
+{
+    int bpp = surface->format->BytesPerPixel;
+    /* Here p is the address to the pixel we want to retrieve */
+    Uint8 *p = (Uint8 *)surface->pixels + y * surface->pitch + x * bpp;
+
+switch (bpp)
+{
+    case 1:
+        return *p;
+        break;
+
+    case 2:
+        return *(Uint16 *)p;
+        break;
+
+    case 3:
+        if (SDL_BYTEORDER == SDL_BIG_ENDIAN)
+            return p[0] << 16 | p[1] << 8 | p[2];
+        else
+            return p[0] | p[1] << 8 | p[2] << 16;
+            break;
+
+        case 4:
+            return *(Uint32 *)p;
+            break;
+
+        default:
+            return 0;       /* shouldn't happen, but avoids warnings */
+      }
+}
 
 void moveVec(float _dir, float _spd) { pl_x += cos(DEGTORAD(_dir))*_spd; pl_y -= sin(DEGTORAD(_dir))*_spd;}
 
@@ -54,9 +86,15 @@ int checkWall(float x, float y) {
 }
 
 void drawTexture(SDL_Renderer *rd, SDL_Surface *surface, int c, int h, int x, int y) {
+
+	// for(int i=0;i<16;i++) {
+	// 	SDL_SetRenderDrawColor(rd, 255*(i%2), 255*(i%2), 255*(i%2), SDL_ALPHA_OPAQUE);
+	// 	SDL_RenderDrawLine(rd, x, y+i*u_y, x, y+(i+1)*u_y); //
+	// }
+
 	SDL_Surface *s;
 	SDL_Texture *t;
-
+	
 	SDL_Rect sr = {c,0,1,surface->h}; //
 	SDL_Rect dr = {x,y,surface->h/2+1,h};
 
@@ -67,11 +105,12 @@ void drawTexture(SDL_Renderer *rd, SDL_Surface *surface, int c, int h, int x, in
 	t = SDL_CreateTextureFromSurface(rd, s);
 	SDL_RenderCopy(rd, t, NULL, &dr);
 	SDL_DestroyTexture(t);
+	SDL_FreeSurface(s); //
 }
 
 void renderMap(SDL_Renderer *rd) {
-	//SDL_SetRenderDrawColor(rd, 0, 0, 0, SDL_ALPHA_OPAQUE);
-	SDL_SetRenderDrawColor(rd, 82, 255, 252, SDL_ALPHA_OPAQUE);
+	SDL_SetRenderDrawColor(rd, 0, 0, 0, SDL_ALPHA_OPAQUE);
+	//SDL_SetRenderDrawColor(rd, 82, 255, 252, SDL_ALPHA_OPAQUE);
 	SDL_RenderClear(rd);
 	float rayX;
 	float rayY;
@@ -92,12 +131,13 @@ void renderMap(SDL_Renderer *rd) {
         dist = sqrt(pow(pl_x - rayX, 2) + pow(pl_y - rayY, 2)) * cos(DEGTORAD((rayDir - pl_dir)));
 		wallHeight = (window_height / 2) * 100 / dist; //
 
-        // SDL_SetRenderDrawColor(rd, 82, 255, 252, SDL_ALPHA_OPAQUE); //ceil
-        // SDL_RenderDrawLine(rd, iterX, 0, iterX, (window_height - wallHeight) / 2);
+        SDL_SetRenderDrawColor(rd, 82, 255, 252, SDL_ALPHA_OPAQUE); //ceil
+        SDL_RenderDrawLine(rd, iterX, 0, iterX, (window_height - wallHeight) / 2);
 
 		SDL_Surface *t = image[obj-1];
 		int tX = ((int)rayX%B_SIZE + (int)rayY%B_SIZE) % 32 / 2 * (t->w / 16);
 		drawTexture(rd, t, tX, wallHeight, iterX, (window_height - wallHeight) / 2);
+
 		// if(obj==1)
 		// 	drawTexture(rd, image[0], ((int)rayX%(B_SIZE*(M_W-1)) + (int)rayY%(B_SIZE*(M_W-1))) % 32 / 2, wallHeight, iterX, (window_height - wallHeight) / 2);
 
@@ -119,10 +159,10 @@ int main(int argc, char *argv[])
         if (SDL_CreateWindowAndRenderer(window_width, window_height, 0, &window, &renderer) == 0) {
             SDL_bool done = SDL_FALSE;
 
+			bool trigger = true;
+
             while (!done) {
                 SDL_Event event;
-
-				renderMap(renderer);
 
 				float t_x = pl_x;
 				float t_y = pl_y;
@@ -148,6 +188,7 @@ int main(int argc, char *argv[])
 						default:
 							break;
 						}
+						trigger = true;
 						break;
 					case SDL_QUIT:
 						done = SDL_TRUE;
@@ -155,22 +196,27 @@ int main(int argc, char *argv[])
 					default:
 						break;
 					}
-                }
 
-				if (keystates[SDL_SCANCODE_W])
-					moveVec(pl_dir, spd);
-				else if (keystates[SDL_SCANCODE_A])
-					moveVec(pl_dir + 90.0f, spd);
-				else if (keystates[SDL_SCANCODE_S])
-					moveVec(pl_dir - 180.0f, spd);
-				else if (keystates[SDL_SCANCODE_D])
-					moveVec(pl_dir - 90.0f, spd);
+					if (keystates[SDL_SCANCODE_W])
+						moveVec(pl_dir, spd);
+					else if (keystates[SDL_SCANCODE_A])
+						moveVec(pl_dir + 90.0f, spd);
+					else if (keystates[SDL_SCANCODE_S])
+						moveVec(pl_dir - 180.0f, spd);
+					else if (keystates[SDL_SCANCODE_D])
+						moveVec(pl_dir - 90.0f, spd);
 
-				if (t_x != pl_x || t_y != pl_y) {
-					std::cout << "x : " << pl_x << '\n' << "y : " << pl_y << '\n';
-					if ((int)(pl_x / (M_W * B_SIZE) - (pl_x < 0)) || (int)(pl_y / (M_H * B_SIZE)) - (pl_y < 0)) //
-						std::cout << "Out of a map!" << '\n';
-					std::cout << '\n';
+					if (t_x != pl_x || t_y != pl_y) {
+						std::cout << "x : " << pl_x << '\n' << "y : " << pl_y << '\n';
+						if ((int)(pl_x / (M_W * B_SIZE) - (pl_x < 0)) || (int)(pl_y / (M_H * B_SIZE)) - (pl_y < 0)) //
+							std::cout << "Out of a map!" << '\n';
+						std::cout << '\n';
+					}
+
+					if(trigger) {
+						renderMap(renderer);
+						trigger = false;
+					}
 				}
             }
         }
