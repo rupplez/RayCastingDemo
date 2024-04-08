@@ -5,7 +5,7 @@ SRC_FILES = $(wildcard $(SRC_DIR)/*.cpp)
 OBJ_NAME = RayCastingDemo
 INCLUDE_PATHS = -Iinclude
 # LIBRARY_PATHS = -Llib
-LIBRARY_PATHS = -L/opt/homebrew/Cellar/sdl2/2.24.1/lib -L/opt/homebrew/Cellar/sdl2_image/2.6.2/lib
+LIBRARY_PATHS = -L/opt/homebrew/Cellar/sdl2/2.26.5/lib -L/opt/homebrew/Cellar/sdl2_image/2.6.3_1/lib
 COMPILER_FLAGS = -std=c++11 -Wall -O0 -g
 LINKER_FLAGS = -lsdl2 -lsdl2_image
 

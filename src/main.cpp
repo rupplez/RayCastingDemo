@@ -7,6 +7,8 @@
 #define window_width 1024
 #define window_height 768
 
+#define WALL_MULC 100
+
 #define DEGTORAD(DIR) DIR*(M_PI/180)
 
 using namespace std;
@@ -86,12 +88,6 @@ int checkWall(float x, float y) {
 }
 
 void drawTexture(SDL_Renderer *rd, SDL_Surface *surface, int c, int h, int x, int y) {
-
-	// for(int i=0;i<16;i++) {
-	// 	SDL_SetRenderDrawColor(rd, 255*(i%2), 255*(i%2), 255*(i%2), SDL_ALPHA_OPAQUE);
-	// 	SDL_RenderDrawLine(rd, x, y+i*u_y, x, y+(i+1)*u_y); //
-	// }
-
 	SDL_Surface *s;
 	SDL_Texture *t;
 	
@@ -103,9 +99,24 @@ void drawTexture(SDL_Renderer *rd, SDL_Surface *surface, int c, int h, int x, in
 	SDL_BlitSurface(surface, &sr, s, NULL);
 
 	t = SDL_CreateTextureFromSurface(rd, s);
+	
 	SDL_RenderCopy(rd, t, NULL, &dr);
 	SDL_DestroyTexture(t);
 	SDL_FreeSurface(s); //
+
+	// SDL_Color rgb;
+	// Uint32 data;
+
+	// float u_y = h/(surface->h); //
+
+	// int u_y = h/16;
+
+	// for(int i=0;i<(surface->h);i++) {
+	// 	data = getpixel(surface, c, i);
+	// 	SDL_GetRGB(data, surface->format, &rgb.r, &rgb.g, &rgb.b);
+	// 	SDL_SetRenderDrawColor(rd, rgb.r, rgb.g, rgb.b, SDL_ALPHA_OPAQUE);
+	// 	SDL_RenderDrawLine(rd, x, y+i*u_y, x, y+(i+1)*u_y); //
+	// }
 }
 
 void renderMap(SDL_Renderer *rd) {
@@ -129,7 +140,7 @@ void renderMap(SDL_Renderer *rd) {
 		}
 
         dist = sqrt(pow(pl_x - rayX, 2) + pow(pl_y - rayY, 2)) * cos(DEGTORAD((rayDir - pl_dir)));
-		wallHeight = (window_height / 2) * 100 / dist; //
+		wallHeight = (window_height / 2) * WALL_MULC / dist; //
 
         SDL_SetRenderDrawColor(rd, 82, 255, 252, SDL_ALPHA_OPAQUE); //ceil
         SDL_RenderDrawLine(rd, iterX, 0, iterX, (window_height - wallHeight) / 2);
