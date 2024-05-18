@@ -13,7 +13,6 @@
 
 using namespace std;
 
-
 int FOV = 40;
 
 const int M_W = 20;
